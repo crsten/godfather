@@ -75,7 +75,7 @@ function init(entry){
 
 function destroy(entry) {
   entry.popper.destroy();
-  document.body.removeChild(entry.element);
+  if(document.body.contains(entry.element)) document.body.removeChild(entry.element);
 }
 
 function renderHint(entry) {
@@ -171,10 +171,12 @@ function merge(a,b){
   return Object.assign({}, a, b);
 }
 
-export default {
+let Godfather = {
   register,
   unregister,
   show,
   hide,
   setDefault
-}
+};
+
+export default Godfather

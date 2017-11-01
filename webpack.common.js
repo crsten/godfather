@@ -6,7 +6,10 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'godfather.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    library: "Godfather",
+    libraryExport: 'default',
+    libraryTarget: "umd"
   },
   module: {
     rules: [{
@@ -28,7 +31,6 @@ module.exports = {
       filename:  (getPath) => {
         return getPath('godfather.css');
       }
-    }),
-    new CleanWebpackPlugin('dist')
+    })
   ]
 };
