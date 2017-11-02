@@ -31,6 +31,8 @@
     padding: 5px 15px;
     color: inherit;
     background: rgba(white,0.1);
+    border: none;
+    color: inherit;
     border-radius: 2px;
     transition: background 100ms ease-out;
 
@@ -41,10 +43,10 @@
 
   .godfather-image{
     background-position: center;
-    background-size: contain;
+    background-size: 75%;
     background-repeat: no-repeat;
     background-color: rgba(white, .05);
-    width: 100px;
+    width: 125px;
   }
 
   .godfather-title{
@@ -138,30 +140,30 @@
   top: $offset;
   right: $offset;
   border-radius: 50%;
-  border: $borderSize solid currentColor;
+  background: currentColor;
   width: $size;
   height: $size;
 
   &:before{
     content: '?';
-    background: white;
     display: block;
     border-radius: 50%;
-    width: $size - ($borderSize*2);
-    height: $size - ($borderSize*2);
+    width: $size;
+    height: $size;
     position: relative;
     font-size: 13px;
     z-index: 1;
+    color: white;
     text-align: center;
-    line-height: $size - ($borderSize*2);
+    line-height: $size;
   }
 
   &:after{
     content: '';
     flex-shrink: 0;
     position: absolute;
-    top: -$borderSize;
-    right: -$borderSize;
+    top: 0;
+    right: 0;
     display: block;
     width: $size;
     height: $size;

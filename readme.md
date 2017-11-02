@@ -8,6 +8,10 @@
 
 Simple vanilla plugin to create good & beautiful onscreen-guides.
 
+## Demo
+
+[Check out a simple demo](https://crsten.github.io/godfather/)
+
 ## Installation
 
 `npm install godfather`

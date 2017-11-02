@@ -5,9 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="dist/godfather.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Monoton" rel="stylesheet">
   <title>Godfather</title>
+  <style>
+    *,
+    *:before,
+    *:after{
+      box-sizing: border-box;
+    }
+
+    html{
+      font: normal normal 400 19px/1.42 'Poppins';
+    }
+
+    body{
+      margin:0;
+      min-height: 100vh;
+      padding: 3rem 1rem;
+
+    }
+
+    h1{
+      font-family: Monoton;
+      font-weight: normal;
+      font-size: 3rem;
+      text-align: center;
+      margin: 0;
+    }
+
+    .content img{
+      width: 200px;
+    }
+
+    .content > div {
+      transition: background .2s ease-in;
+    }
+
+    .content > div:hover{
+      background: rgba(0,0,0,0.02);
+    }
+  </style>
 </head>
-<body>
+<body style="display: flex;flex-direction: column;">
+  <div style="margin: 0 auto 2rem auto;display: flex; align-items: center; justify-content: center;">
+    <img src="assets/icon.svg" alt="Godfather" style="width: 100px;margin-right: 1rem;opacity: .8;">
+    <div class="main">
+      <h1>Godfather</h1>
+    </div>
+  </div>
+
+  <div style="display: flex;flex-grow: 1" class="content">
+    <div style="display: flex; justify-content: center; align-items: center; flex-grow:1">
+      <div class="step-1">
+        <img src="assets/step-1.svg" alt="">
+      </div>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; flex-grow:1">
+      <div class="step-2">
+        <img src="assets/step-2.svg" alt="">
+      </div>
+    </div>
+  </div>
+
   <script src="dist/godfather.js"></script>
+  <script>
+    Godfather.register('main', '.main', {
+      image: 'assets/icon_negative.svg',
+      title: 'Godfather',
+      content: 'A man who doesn\'t spend time with his customers can never be a real man.',
+      hint: true,
+      next: 'step-1'
+    })
+
+    Godfather.register('step-1', '.step-1', {
+      image: 'assets/step-1_negative.svg',
+      content: '“I\'ll make him an offer he can\'t refuse.”<br><span style="font-size: .75em">Mario Puzo, The Godfather</span>',
+      next: 'step-2',
+      hint: true
+    })
+
+    Godfather.register('step-2', '.step-2', {
+      image: 'assets/step-2_negative.svg',
+      content: '“Great men are not born great, they grow great . . .”<br><span style="font-size: .75em">Mario Puzo, The Godfather</span>',
+      hint: true
+    })
+  </script>
 </body>
 </html>
