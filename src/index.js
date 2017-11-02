@@ -3,6 +3,8 @@ import './polyfills/find.js';
 import './polyfills/assign.js';
 import './styles/main.scss';
 
+let overlay = document.createElement('div');
+overlay.classList.add('godfather-overlay');
 let entries = [];
 let defaultOptions = {
   next: null,
@@ -11,6 +13,7 @@ let defaultOptions = {
   content: null,
   image: null,
   clean: false,
+  overlay: false,
   scrollIntoView: true,
   theme: {
     background: '#222',
@@ -25,6 +28,24 @@ let defaultOptions = {
 
 function resolveTarget(entry) {
   return entry.target instanceof HTMLElement ? entry.target : document.querySelector(entry.target);
+}
+
+function addOverlay(entry) {
+  let target = resolveTarget(entry);
+  if(!document.body.contains(overlay)) document.body.appendChild(overlay);
+
+  if(target) {
+    let style = window.getComputedStyle(target);
+    let position = style.getPropertyValue('position');
+    if(position === 'static') target.style.position = 'relative';
+    target.style.zIndex = 9;
+  }
+}
+
+function removeOverlay(entry) {
+  let target = resolveTarget(entry);
+  if(target) target.style.zIndex = null;
+  if(document.body.contains(overlay)) document.body.removeChild(overlay);
 }
 
 function getNext(entry) {
@@ -78,6 +99,8 @@ function init(entry){
     entry.element.firstElementChild.style[key] = entry.options.theme[key];
   });
 
+  if(entry.options.overlay) addOverlay(entry);
+
   entry.element.querySelector('.godfather-close').addEventListener('click', function(){
     destroy(entry);
   });
@@ -107,6 +130,7 @@ function init(entry){
 
 function destroy(entry) {
   if(entry.popper) entry.popper.destroy();
+  if(entry.options.overlay) removeOverlay(entry);
   if(document.body.contains(entry.element)) document.body.removeChild(entry.element);
 }
 

@@ -55,6 +55,7 @@ This plugin can be customized, the following options are enabled:
 | hint | Boolean | Adds a small hint to the target | false |
 | scrollIntoView | Boolean | Scrolls the guide into view | true |
 | next | String | id of the next guide to show | null |
+| overlay | Boolean | add an overlay on the background and highlight the target | false |
 | theme | Object | ... | ... |
 | └-- background | String | Hex or rgb background | "#222" |
 | └-- color | String | Hex or rgb text color | "white" |
