@@ -24,9 +24,7 @@ let defaultOptions = {
 }
 
 function resolveTarget(entry) {
-  let target = entry.target instanceof HTMLElement ? entry.target : document.querySelector(entry.target);
-  if(!target) throw new Error('Invalid target');
-  return target;
+  return entry.target instanceof HTMLElement ? entry.target : document.querySelector(entry.target);
 }
 
 function init(entry){
@@ -82,6 +80,7 @@ function destroy(entry) {
 
 function renderHint(entry) {
   entry.target = resolveTarget(entry);
+  if(!entry.target) return;
   let style = window.getComputedStyle(entry.target);
   let position = style.getPropertyValue('position');
   if(position === 'static') entry.target.style.position = 'relative';
