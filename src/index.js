@@ -1,4 +1,6 @@
 import Popper from 'popper.js';
+import './polyfills/find.js';
+import './polyfills/assign.js';
 import './styles/main.scss';
 
 let entries = [];
