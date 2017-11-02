@@ -27,17 +27,50 @@ function resolveTarget(entry) {
   return entry.target instanceof HTMLElement ? entry.target : document.querySelector(entry.target);
 }
 
-function init(entry){
-  if(document.body.contains(entry.element)) return;
+function getNext(entry) {
+  if(!entry.options.next) return null;
+  let next = entries.find(e => e.id === entry.options.next);
+  if(!next) return null;
 
-  entry.target = entry.target ? resolveTarget(entry) : null ;
-  entry.element = document.createElement('div');
-  entry.element.classList.add('godfather-entry');
+  let hasTarget = next.target ? true : false ;
+  if(!hasTarget) return next;
+  else {
+    let target = resolveTarget(next);
+    if(!target) return getNext(next);
+    else return next;
+  }
+}
 
+function getPrev(entry){
   let prev = entries.find(e => e.options.next === entry.id);
+  if(!prev) return null;
+
+  let hasTarget = prev.target ? true : false ;
+  if(!hasTarget) return prev;
+  else {
+    let target = resolveTarget(prev);
+    if(!target) return getPrev(prev);
+    else return prev;
+  }
+}
+
+function init(entry){
+  if(document.body.contains(entry.element)) return console.log('Target already visible');
+
+  let prev = getPrev(entry);
+  let next = getNext(entry);
   if(prev) {
     entry.options.prev = prev.id;
   }
+
+  let hasTarget = entry.target ? true : false ;
+  let target = entry.target ? resolveTarget(entry) : null ;
+
+  if(hasTarget && !target) return console.log('Target not found');
+
+  entry.element = document.createElement('div');
+  entry.element.classList.add('godfather-entry');
+
 
   entry.element.innerHTML = template(entry);
 
@@ -53,15 +86,14 @@ function init(entry){
     let prev = entries.find(e => e.id === entry.options.prev);
     init(prev);
   });
-  if(entry.options.next && entries.find(e => e.id === entry.options.next)) entry.element.querySelector('.godfather-next').addEventListener('click', function(){
+  if(next) entry.element.querySelector('.godfather-next').addEventListener('click', function(){
     destroy(entry);
-    let next = entries.find(e => e.id === entry.options.next);
     init(next);
   });
 
   document.body.appendChild(entry.element);
 
-  if(entry.target) entry.popper = new Popper(entry.target, entry.element, {
+  if(target) entry.popper = new Popper(target, entry.element, {
     placement: entry.options.placement || 'bottom',
     modifiers: {
       offset: {
@@ -79,11 +111,11 @@ function destroy(entry) {
 }
 
 function renderHint(entry) {
-  entry.target = resolveTarget(entry);
-  if(!entry.target) return;
-  let style = window.getComputedStyle(entry.target);
+  let target = resolveTarget(entry);
+  if(!target) return;
+  let style = window.getComputedStyle(target);
   let position = style.getPropertyValue('position');
-  if(position === 'static') entry.target.style.position = 'relative';
+  if(position === 'static') target.style.position = 'relative';
 
   let hint = document.createElement('hint');
   hint.classList.add('godfather-hint');
@@ -96,34 +128,35 @@ function renderHint(entry) {
   }).bind(null, entry))
 
   entry.hint = hint;
-  entry.target.appendChild(hint);
+  target.appendChild(hint);
 }
 
 function destroyHint(entry) {
-  if(!entry.target) return;
-  entry.target.removeChild(entry.hint);
+  let target = resolveTarget(entry);
+  if(!target) return;
+  target.removeChild(entry.hint);
 }
 
 function template(entry) {
-  let entryClone = JSON.parse(JSON.stringify(entry));
-  if(entry.options.next && !entries.find(e => e.id === entry.options.next)) entryClone.options.next = null;
+  let prev = getPrev(entry);
+  let next = getNext(entry);
 
   return `
     <div class="godfather-animation">
-      <div class="popper__arrow tooltip-arrow" x-arrow style="color: ${entryClone.options.theme.background}"></div>
+      <div class="popper__arrow tooltip-arrow" x-arrow style="color: ${entry.options.theme.background}"></div>
       <div class="godfather-container">
-        ${entryClone.options.image ? `<div class="godfather-image" style="background-image: url('${entryClone.options.image}')"></div>` : '' }
+        ${entry.options.image ? `<div class="godfather-image" style="background-image: url('${entry.options.image}')"></div>` : '' }
         <div class="godfather-inner-container">
           <div class="godfather-content-container">
-            ${entryClone.options.title ? `<div class="godfather-title">${entryClone.options.title}</div><hr>` : '' }
-            <div class="godfather-content">${entryClone.options.content}</div>
+            ${entry.options.title ? `<div class="godfather-title">${entry.options.title}</div><hr>` : '' }
+            <div class="godfather-content">${entry.options.content}</div>
           </div>
           <div class="godfather-actions">
             <div>
-              ${entryClone.options.prev ? `<button class="godfather-prev">${entryClone.options.labels.prev}</button>` : ''}
-              ${entryClone.options.next ? `<button class="godfather-next">${entryClone.options.labels.next}</button>` : ''}
+              ${prev ? `<button class="godfather-prev">${entry.options.labels.prev}</button>` : ''}
+              ${next ? `<button class="godfather-next">${entry.options.labels.next}</button>` : ''}
             </div>
-            <button class="godfather-close">${entryClone.options.labels.close}</button>
+            <button class="godfather-close">${entry.options.labels.close}</button>
           </div>
         </div>
       </div>
