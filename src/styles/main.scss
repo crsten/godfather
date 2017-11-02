@@ -1,4 +1,9 @@
 .godfather-entry{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+
   $tooltip-size: 6px;
   .godfather-animation{
     animation: godfather-enter 200ms ease-out;

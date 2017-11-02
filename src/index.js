@@ -23,14 +23,14 @@ let defaultOptions = {
 
 function resolveTarget(entry) {
   let target = entry.target instanceof HTMLElement ? entry.target : document.querySelector(entry.target);
-  if(!target) throw new Error('Invalig target');
+  if(!target) throw new Error('Invalid target');
   return target;
 }
 
 function init(entry){
   if(document.body.contains(entry.element)) return;
 
-  entry.target = resolveTarget(entry);
+  entry.target = entry.target ? resolveTarget(entry) : null ;
   entry.element = document.createElement('div');
   entry.element.classList.add('godfather-entry');
 
@@ -53,7 +53,7 @@ function init(entry){
     let prev = entries.find(e => e.id === entry.options.prev);
     init(prev);
   });
-  if(entry.options.next) entry.element.querySelector('.godfather-next').addEventListener('click', function(){
+  if(entry.options.next && entries.find(e => e.id === entry.options.next)) entry.element.querySelector('.godfather-next').addEventListener('click', function(){
     destroy(entry);
     let next = entries.find(e => e.id === entry.options.next);
     init(next);
@@ -61,7 +61,7 @@ function init(entry){
 
   document.body.appendChild(entry.element);
 
-  entry.popper = new Popper(entry.target, entry.element, {
+  if(entry.target) entry.popper = new Popper(entry.target, entry.element, {
     placement: entry.options.placement || 'bottom',
     modifiers: {
       offset: {
@@ -74,7 +74,7 @@ function init(entry){
 }
 
 function destroy(entry) {
-  entry.popper.destroy();
+  if(entry.popper) entry.popper.destroy();
   if(document.body.contains(entry.element)) document.body.removeChild(entry.element);
 }
 
@@ -99,26 +99,30 @@ function renderHint(entry) {
 }
 
 function destroyHint(entry) {
+  if(!entry.target) return;
   entry.target.removeChild(entry.hint);
 }
 
 function template(entry) {
+  let entryClone = JSON.parse(JSON.stringify(entry));
+  if(entry.options.next && !entries.find(e => e.id === entry.options.next)) entryClone.options.next = null;
+
   return `
     <div class="godfather-animation">
-      <div class="popper__arrow tooltip-arrow" x-arrow style="color: ${entry.options.theme.background}"></div>
+      <div class="popper__arrow tooltip-arrow" x-arrow style="color: ${entryClone.options.theme.background}"></div>
       <div class="godfather-container">
-        ${entry.options.image ? `<div class="godfather-image" style="background-image: url('${entry.options.image}')"></div>` : '' }
+        ${entryClone.options.image ? `<div class="godfather-image" style="background-image: url('${entryClone.options.image}')"></div>` : '' }
         <div class="godfather-inner-container">
           <div class="godfather-content-container">
-            ${entry.options.title ? `<div class="godfather-title">${entry.options.title}</div><hr>` : '' }
-            <div class="godfather-content">${entry.options.content}</div>
+            ${entryClone.options.title ? `<div class="godfather-title">${entryClone.options.title}</div><hr>` : '' }
+            <div class="godfather-content">${entryClone.options.content}</div>
           </div>
           <div class="godfather-actions">
             <div>
-              ${entry.options.prev ? `<button class="godfather-prev">${entry.options.labels.prev}</button>` : ''}
-              ${entry.options.next ? `<button class="godfather-next">${entry.options.labels.next}</button>` : ''}
+              ${entryClone.options.prev ? `<button class="godfather-prev">${entryClone.options.labels.prev}</button>` : ''}
+              ${entryClone.options.next ? `<button class="godfather-next">${entryClone.options.labels.next}</button>` : ''}
             </div>
-            <button class="godfather-close">${entry.options.labels.close}</button>
+            <button class="godfather-close">${entryClone.options.labels.close}</button>
           </div>
         </div>
       </div>
@@ -128,7 +132,7 @@ function template(entry) {
 
 function register(id, target, options) {
   if(!id) throw new Error('id is required');
-  if(!target) throw new Error('element is required');
+  if(entries.find(e => e.id === id)) throw new Error('Duplicate id');
 
   let newEntry = {
     id,
@@ -138,7 +142,7 @@ function register(id, target, options) {
 
   entries.push(newEntry);
 
-  if(newEntry.options.hint) renderHint(newEntry)
+  if(newEntry.target && newEntry.options.hint) renderHint(newEntry)
 }
 
 function unregister(id) {
@@ -146,6 +150,7 @@ function unregister(id) {
   if(!entry) return;
 
   destroy(entry);
+  destroyHint(entry);
   entries = entries.filter(e => e.id !== id);
 }
 
