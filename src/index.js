@@ -146,6 +146,7 @@ function renderHint(entry) {
   hint.style.color = entry.options.theme.background;
 
   hint.addEventListener('click', (function(entry) {
+    event.preventDefault();
     event.stopPropagation();
     if(document.body.contains(entry.element)) hide(entry.id);
     else show(entry.id);
