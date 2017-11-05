@@ -95,6 +95,16 @@ function init(entry){
 
   entry.element.innerHTML = template(entry);
 
+  if(entry.options.image) {
+    let img = new Image();
+    img.src = entry.options.image;
+    let imageEl = entry.element.querySelector('.godfather-image');
+    img.addEventListener('load', () => {
+      imageEl.style.backgroundImage = 'url(' + entry.options.image + ')';
+      imageEl.classList.remove('godfather-image-loader')
+    });
+  }
+
   Object.keys(entry.options.theme).forEach(key => {
     entry.element.firstElementChild.style[key] = entry.options.theme[key];
   });
@@ -170,7 +180,7 @@ function template(entry) {
     <div class="godfather-animation">
       <div class="popper__arrow tooltip-arrow" x-arrow style="color: ${entry.options.theme.background}"></div>
       <div class="godfather-container">
-        ${entry.options.image ? `<div class="godfather-image" style="background-image: url('${entry.options.image}')"></div>` : '' }
+        ${entry.options.image ? `<div class="godfather-image godfather-image-loader"></div>` : '' }
         <div class="godfather-inner-container">
           <div class="godfather-content-container">
             ${entry.options.title ? `<div class="godfather-title">${entry.options.title}</div><hr>` : '' }

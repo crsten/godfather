@@ -53,6 +53,31 @@
     background-repeat: no-repeat;
     background-color: rgba(white, .05);
     width: 125px;
+    position: relative;
+  }
+
+  .godfather-image-loader{
+    &:before{
+      $size: 20px;
+      content: '';
+      position: absolute;
+      top:50%;
+      left: 50%;
+      margin-left: -$size/2;
+      margin-top: -$size/2;
+      width: $size;
+      height: $size;
+      border-radius: 50%;
+      border: 2px solid rgba(white, .5);
+      border-top-color: transparent;
+      animation: spin 500ms linear infinite;
+
+      @keyframes spin{
+        100%{
+          transform: rotate(1turn);
+        }
+      }
+    }
   }
 
   .godfather-title{
