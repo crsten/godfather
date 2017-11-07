@@ -155,12 +155,12 @@ function renderHint(entry) {
   hint.classList.add('godfather-hint');
   hint.style.color = entry.options.theme.background;
 
-  hint.addEventListener('click', (function(entry) {
+  hint.addEventListener('click', function(event) { 
     event.preventDefault();
     event.stopPropagation();
     if(document.body.contains(entry.element)) hide(entry.id);
     else show(entry.id);
-  }).bind(null, entry))
+  })
 
   entry.hint = hint;
   target.appendChild(hint);
