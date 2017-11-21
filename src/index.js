@@ -57,7 +57,7 @@ function getNext(entry) {
   if(!hasTarget) return next;
   else {
     let target = resolveTarget(next);
-    if(!target) return getNext(next);
+    if(!target || !document.body.contains(target)) return getNext(next);
     else return next;
   }
 }
@@ -70,7 +70,7 @@ function getPrev(entry){
   if(!hasTarget) return prev;
   else {
     let target = resolveTarget(prev);
-    if(!target) return getPrev(prev);
+    if(!target || !document.body.contains(target)) return getPrev(prev);
     else return prev;
   }
 }
@@ -155,7 +155,7 @@ function renderHint(entry) {
   hint.classList.add('godfather-hint');
   hint.style.color = entry.options.theme.background;
 
-  hint.addEventListener('click', function(event) { 
+  hint.addEventListener('click', function(event) {
     event.preventDefault();
     event.stopPropagation();
     if(document.body.contains(entry.element)) hide(entry.id);
@@ -219,7 +219,7 @@ function unregister(id) {
   if(!entry) return;
 
   destroy(entry);
-  destroyHint(entry);
+  if(entry.hint) destroyHint(entry);
   entries = entries.filter(e => e.id !== id);
 }
 
