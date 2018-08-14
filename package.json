@@ -30,24 +30,24 @@
   },
   "homepage": "https://github.com/crsten/godfather#readme",
   "dependencies": {
-    "popper.js": "^1.12.6"
+    "popper.js": "^1.14.4"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.0.0-beta.4",
-    "babel-loader": "^7.1.2",
-    "babel-minify-webpack-plugin": "^0.2.0",
-    "babel-preset-env": "^1.6.1",
-    "clean-webpack-plugin": "^0.1.17",
-    "css-loader": "^0.28.7",
+    "@babel/preset-env": "^7.0.0-rc.1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^1.0.0",
     "cz-conventional-changelog": "^2.1.0",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "node-sass": "^4.5.3",
-    "optimize-css-assets-webpack-plugin": "^3.2.0",
-    "sass-loader": "^6.0.6",
-    "semantic-release": "^8.2.0",
-    "style-loader": "^0.19.0",
-    "webpack": "^3.8.1",
-    "webpack-merge": "^4.1.0"
+    "mini-css-extract-plugin": "^0.4.1",
+    "node-sass": "^4.9.3",
+    "optimize-css-assets-webpack-plugin": "^5.0.0",
+    "sass-loader": "^7.1.0",
+    "semantic-release": "^15.9.8",
+    "style-loader": "^0.22.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-merge": "^4.1.4"
   },
   "config": {
     "commitizen": {

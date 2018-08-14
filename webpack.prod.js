@@ -1,14 +1,6 @@
-const { DefinePlugin } = require('webpack');
-const merge = require('webpack-merge');
-const common = require('./webpack.common');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const merge = require('webpack-merge')
+const common = require('./webpack.common')
 
 module.exports = merge(common, {
-  plugins: [
-    new MinifyPlugin(),
-    new OptimizeCssAssetsPlugin({
-      cssProcessorOptions: { discardComments: { removeAll: true } }
-    })
-  ]
-});
+  mode: 'production',
+})

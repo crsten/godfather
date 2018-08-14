@@ -1,94 +1,91 @@
-.godfather-entry{
+.godfather-entry {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   z-index: 10;
 
   $tooltip-size: 6px;
-  .godfather-animation{
+  .godfather-animation {
     animation: godfather-enter 200ms ease-out;
     line-height: 1.42;
     border-radius: 4px;
     box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.4);
   }
 
-  .godfather-container{
+  .godfather-container {
     display: flex;
   }
 
-  .godfather-inner-container{
+  .godfather-inner-container {
     padding: 1em;
     max-width: 300px;
   }
 
-  .godfather-content-container{
-  }
-
-  .godfather-actions{
+  .godfather-actions {
     margin-top: 15px;
     display: flex;
     justify-content: space-between;
   }
 
-  button{
-    font-size: .75em;
+  button {
+    font-size: 0.75em;
     cursor: pointer;
     padding: 5px 15px;
     color: inherit;
-    background: rgba(white,0.1);
+    background: rgba(white, 0.1);
     border: none;
     color: inherit;
     border-radius: 2px;
     transition: background 100ms ease-out;
 
-    &:hover{
-      background: rgba(white, .2);
+    &:hover {
+      background: rgba(white, 0.2);
     }
   }
 
-  .godfather-image{
+  .godfather-image {
     background-position: center;
     background-size: 75% 75%;
     background-repeat: no-repeat;
-    background-color: rgba(white, .05);
+    background-color: rgba(white, 0.05);
     width: 125px;
     position: relative;
   }
 
-  .godfather-image-loader{
-    &:before{
+  .godfather-image-loader {
+    &:before {
       $size: 20px;
       content: '';
       position: absolute;
-      top:50%;
+      top: 50%;
       left: 50%;
       margin-left: -$size/2;
       margin-top: -$size/2;
       width: $size;
       height: $size;
       border-radius: 50%;
-      border: 2px solid rgba(white, .5);
+      border: 2px solid rgba(white, 0.5);
       border-top-color: transparent;
       animation: spin 500ms linear infinite;
 
-      @keyframes spin{
-        100%{
+      @keyframes spin {
+        100% {
           transform: rotate(1turn);
         }
       }
     }
   }
 
-  .godfather-title{
+  .godfather-title {
     font-weight: bold;
   }
 
-  hr{
+  hr {
     border: none;
     border-top: 1px solid currentColor;
-    opacity: .2;
-    margin: .5em 0;
+    opacity: 0.2;
+    margin: 0.5em 0;
   }
 
   .tooltip-arrow {
@@ -100,7 +97,7 @@
     border-color: currentColor;
   }
 
-  &[x-placement^="top"] {
+  &[x-placement^='top'] {
     margin-bottom: $tooltip-size;
 
     .tooltip-arrow {
@@ -109,13 +106,13 @@
       border-right-color: transparent !important;
       border-bottom-color: transparent !important;
       bottom: -$tooltip-size;
-      left: calc(50% - $tooltip-size);
+      left: calc(50% - #{$tooltip-size});
       margin-top: 0;
       margin-bottom: 0;
     }
   }
 
-  &[x-placement^="bottom"] {
+  &[x-placement^='bottom'] {
     margin-top: $tooltip-size;
 
     .tooltip-arrow {
@@ -124,13 +121,13 @@
       border-right-color: transparent !important;
       border-top-color: transparent !important;
       top: -$tooltip-size;
-      left: calc(50% - $tooltip-size);
+      left: calc(50% - #{$tooltip-size});
       margin-top: 0;
       margin-bottom: 0;
     }
   }
 
-  &[x-placement^="right"] {
+  &[x-placement^='right'] {
     margin-left: $tooltip-size;
 
     .tooltip-arrow {
@@ -139,13 +136,13 @@
       border-top-color: transparent !important;
       border-bottom-color: transparent !important;
       left: -$tooltip-size;
-      top: calc(50% - $tooltip-size);
+      top: calc(50% - #{$tooltip-size});
       margin-left: 0;
       margin-right: 0;
     }
   }
 
-  &[x-placement^="left"] {
+  &[x-placement^='left'] {
     margin-right: $tooltip-size;
 
     .tooltip-arrow {
@@ -154,20 +151,20 @@
       border-right-color: transparent !important;
       border-bottom-color: transparent !important;
       right: -$tooltip-size;
-      top: calc(50% - $tooltip-size);
+      top: calc(50% - #{$tooltip-size});
       margin-left: 0;
       margin-right: 0;
     }
   }
 }
 
-.godfather-hint{
+.godfather-hint {
   $size: 20px;
   $borderSize: 2px;
   $offset: -5px;
   cursor: pointer;
   position: absolute;
-  opacity: .9;
+  opacity: 0.9;
   top: $offset;
   right: $offset;
   border-radius: 50%;
@@ -175,7 +172,7 @@
   width: $size;
   height: $size;
 
-  &:before{
+  &:before {
     content: '?';
     display: block;
     border-radius: 50%;
@@ -189,7 +186,7 @@
     line-height: $size;
   }
 
-  &:after{
+  &:after {
     content: '';
     flex-shrink: 0;
     position: absolute;
@@ -203,30 +200,30 @@
     animation: pulse 2s infinite ease-out;
   }
 
-  @keyframes pulse{
-    0%{
+  @keyframes pulse {
+    0% {
       transform: scale(1);
     }
-    100%{
+    100% {
       transform: scale(1.5);
       opacity: 0;
     }
   }
 }
 
-.godfather-overlay{
+.godfather-overlay {
   position: fixed;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   height: 100%;
   width: 100%;
-  background: rgba(black, .4);
+  background: rgba(black, 0.4);
   z-index: 8;
 }
 
-@keyframes godfather-enter{
-  0%{
+@keyframes godfather-enter {
+  0% {
     opacity: 0;
-    transform: translateY(10px)
+    transform: translateY(10px);
   }
 }

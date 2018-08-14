@@ -1,36 +1,35 @@
-const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin')
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const path = require('path')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 module.exports = {
   entry: ['./src/index.js'],
   output: {
     filename: 'godfather.js',
     path: path.resolve(__dirname, 'dist'),
-    library: "Godfather",
+    library: 'Godfather',
     libraryExport: 'default',
-    libraryTarget: "umd"
+    libraryTarget: 'umd',
   },
   module: {
-    rules: [{
-      test: /\.js$/,
-      exclude: /(node_modules|bower_components)/,
-      use: {
-        loader: 'babel-loader'
-      }
-    },{
-      test: /\.scss$/,
-      use: ExtractTextPlugin.extract({
-        fallback: "style-loader",
-        use: ['css-loader','sass-loader']
-      })
-    }]
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+      {
+        test: /\.scss$/,
+        use: ['style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+    ],
   },
   plugins: [
-    new ExtractTextPlugin({
-      filename:  (getPath) => {
-        return getPath('godfather.css');
-      }
-    })
-  ]
-};
+    new MiniCssExtractPlugin({
+      filename: 'godfather.css',
+    }),
+    new OptimizeCssAssetsPlugin(),
+  ],
+}
