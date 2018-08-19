@@ -130,6 +130,8 @@ function init(entry) {
 
   document.body.appendChild(entry.element)
 
+  entry.clickAway = clickAway(entry.element, hide.bind(null, entry.id))
+
   if (target)
     entry.popper = new Popper(target, entry.element, {
       placement: entry.options.placement || 'bottom',
@@ -146,6 +148,7 @@ function init(entry) {
 function destroy(entry) {
   if (entry.popper) entry.popper.destroy()
   if (entry.options.overlay) removeOverlay(entry)
+  if (entry.clickAway) window.removeEventListener('click', entry.clickAway)
   if (document.body.contains(entry.element)) document.body.removeChild(entry.element)
 }
 
@@ -161,8 +164,6 @@ function renderHint(entry) {
   hint.style.color = entry.options.theme.background
 
   hint.addEventListener('click', function(event) {
-    event.preventDefault()
-    event.stopPropagation()
     if (document.body.contains(entry.element)) {
       hide(entry.id)
       if ('hide' in entry.events) entry.events['hide'].forEach(f => f(entry.instance))
@@ -275,6 +276,17 @@ function merge(a, b) {
   })
 
   return Object.assign({}, a, b)
+}
+
+function clickAway(target, cb) {
+  let func = function(event) {
+    if (target.contains(event.target) || target === event.target) return
+    cb()
+  }
+
+  setTimeout(() => window.addEventListener('click', func))
+
+  return func
 }
 
 let Godfather = {
