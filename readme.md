@@ -16,6 +16,10 @@ Simple vanilla plugin to create good & beautiful onscreen-guides.
 
 `npm install godfather`
 
+## Wrappers
+
+- Vue – [vue-godfather](https://github.com/crsten/vue-godfather)
+
 ## API
 
 | Function                                                          | Description                | Return   |
