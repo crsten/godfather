@@ -93,6 +93,8 @@ function init(entry) {
 
     if (hasTarget && !target) return console.log('Target not found')
 
+    target.classList.add('godfather--active')
+
     entry.element = document.createElement('div')
     entry.element.classList.add('godfather-entry')
 
@@ -151,6 +153,7 @@ function init(entry) {
 }
 
 function destroy(entry) {
+  if (entry.target) entry.target.classList.remove('godfather--active')
   if (entry.popper) entry.popper.destroy()
   if (entry.options.overlay) removeOverlay(entry)
   if (entry.clickAway) window.removeEventListener('click', entry.clickAway)
