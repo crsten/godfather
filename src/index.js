@@ -153,7 +153,10 @@ function init(entry) {
 }
 
 function destroy(entry) {
-  if (entry.target) entry.target.classList.remove('godfather--active')
+  if (entry.target) {
+    let target = resolveTarget(entry)
+    if (target) target.classList.remove('godfather--active')
+  }
   if (entry.popper) entry.popper.destroy()
   if (entry.options.overlay) removeOverlay(entry)
   if (entry.clickAway) window.removeEventListener('click', entry.clickAway)
