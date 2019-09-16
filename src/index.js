@@ -77,79 +77,87 @@ function getPrev(entry) {
 
 function init(entry) {
   if (document.body.contains(entry.element)) return console.log('Target already visible')
+  let showPromise = []
+  if ('show' in entry.events)
+    showPromise = entry.events['show'].map(f => f(entry.instance)).filter(p => p instanceof Promise)
 
-  let prev = getPrev(entry)
-  let next = getNext(entry)
-  if (prev) {
-    entry.options.prev = prev.id
-  }
+  Promise.all(showPromise).then(() => {
+    let prev = getPrev(entry)
+    let next = getNext(entry)
+    if (prev) {
+      entry.options.prev = prev.id
+    }
 
-  let hasTarget = entry.target ? true : false
-  let target = entry.target ? resolveTarget(entry) : null
+    let hasTarget = entry.target ? true : false
+    let target = entry.target ? resolveTarget(entry) : null
 
-  if (hasTarget && !target) return console.log('Target not found')
+    if (hasTarget && !target) return console.log('Target not found')
 
-  entry.element = document.createElement('div')
-  entry.element.classList.add('godfather-entry')
+    entry.element = document.createElement('div')
+    entry.element.classList.add('godfather-entry')
 
-  entry.element.innerHTML = template(entry)
+    entry.element.innerHTML = template(entry)
 
-  if (entry.options.image) {
-    let img = new Image()
-    img.src = entry.options.image
-    let imageEl = entry.element.querySelector('.godfather-image')
-    img.addEventListener('load', () => {
-      imageEl.style.backgroundImage = 'url(' + entry.options.image + ')'
-      imageEl.classList.remove('godfather-image-loader')
+    if (entry.options.image) {
+      let img = new Image()
+      img.src = entry.options.image
+      let imageEl = entry.element.querySelector('.godfather-image')
+      img.addEventListener('load', () => {
+        imageEl.style.backgroundImage = 'url(' + entry.options.image + ')'
+        imageEl.classList.remove('godfather-image-loader')
+      })
+    }
+
+    Object.keys(entry.options.theme).forEach(key => {
+      entry.element.firstElementChild.style[key] = entry.options.theme[key]
     })
-  }
 
-  Object.keys(entry.options.theme).forEach(key => {
-    entry.element.firstElementChild.style[key] = entry.options.theme[key]
-  })
+    if (entry.options.overlay) addOverlay(entry)
 
-  if (entry.options.overlay) addOverlay(entry)
-
-  entry.element.querySelector('.godfather-close').addEventListener('click', function() {
-    destroy(entry)
-    if ('close' in entry.events) entry.events['close'].forEach(f => f(entry.instance))
-  })
-  if (entry.options.prev)
-    entry.element.querySelector('.godfather-prev').addEventListener('click', function() {
+    entry.element.querySelector('.godfather-close').addEventListener('click', function() {
       destroy(entry)
-      let prev = entries.find(e => e.id === entry.options.prev)
-      init(prev)
-      if ('prev' in entry.events) entry.events['prev'].forEach(f => f(entry.instance))
+      if ('close' in entry.events) entry.events['close'].forEach(f => f(entry.instance))
     })
-  if (next)
-    entry.element.querySelector('.godfather-next').addEventListener('click', function() {
-      destroy(entry)
-      init(next)
-      if ('next' in entry.events) entry.events['next'].forEach(f => f(entry.instance))
-    })
+    if (entry.options.prev)
+      entry.element.querySelector('.godfather-prev').addEventListener('click', function() {
+        destroy(entry)
+        let prev = entries.find(e => e.id === entry.options.prev)
+        init(prev)
+        if ('prev' in entry.events) entry.events['prev'].forEach(f => f(entry.instance))
+      })
+    if (next)
+      entry.element.querySelector('.godfather-next').addEventListener('click', function() {
+        destroy(entry)
+        init(next)
+        if ('next' in entry.events) entry.events['next'].forEach(f => f(entry.instance))
+      })
 
-  document.body.appendChild(entry.element)
+    document.body.appendChild(entry.element)
 
-  entry.clickAway = clickAway(entry.element, hide.bind(null, entry.id))
+    entry.clickAway = clickAway(entry.element, hide.bind(null, entry.id))
 
-  if (target)
-    entry.popper = new Popper(target, entry.element, {
-      placement: entry.options.placement || 'bottom',
-      modifiers: {
-        offset: {
-          offset: '0,10',
+    if (target)
+      entry.popper = new Popper(target, entry.element, {
+        placement: entry.options.placement || 'bottom',
+        modifiers: {
+          offset: {
+            offset: '0,10',
+          },
         },
-      },
-    })
+      })
 
-  if (entry.options.scrollIntoView) setTimeout(() => entry.element.scrollIntoView({ behavior: 'smooth' }), 0)
+    if (entry.options.scrollIntoView) setTimeout(() => entry.element.scrollIntoView({ behavior: 'smooth' }), 0)
+  })
 }
 
 function destroy(entry) {
   if (entry.popper) entry.popper.destroy()
   if (entry.options.overlay) removeOverlay(entry)
   if (entry.clickAway) window.removeEventListener('click', entry.clickAway)
-  if (document.body.contains(entry.element)) document.body.removeChild(entry.element)
+  if (document.body.contains(entry.element)) {
+    document.body.removeChild(entry.element)
+    if ('hide' in entry.events) entry.events['hide'].forEach(f => f(entry.instance))
+  }
 }
 
 function renderHint(entry) {
@@ -164,13 +172,8 @@ function renderHint(entry) {
   hint.style.color = entry.options.theme.background
 
   hint.addEventListener('click', function(event) {
-    if (document.body.contains(entry.element)) {
-      hide(entry.id)
-      if ('hide' in entry.events) entry.events['hide'].forEach(f => f(entry.instance))
-    } else {
-      show(entry.id)
-      if ('show' in entry.events) entry.events['show'].forEach(f => f(entry.instance))
-    }
+    if (document.body.contains(entry.element)) hide(entry.id)
+    else show(entry.id)
   })
 
   entry.hint = hint
