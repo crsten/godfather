@@ -171,6 +171,7 @@
   background: currentColor;
   width: $size;
   height: $size;
+  z-index: 1;
 
   &:before {
     content: '?';

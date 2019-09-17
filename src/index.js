@@ -7,6 +7,7 @@ let overlay = document.createElement('div')
 overlay.classList.add('godfather-overlay')
 let entries = []
 let defaultOptions = {
+  prev: null,
   next: null,
   hint: false,
   title: null,
@@ -50,6 +51,8 @@ function removeOverlay(entry) {
 
 function getNext(entry) {
   if (!entry.options.next) return null
+  if (isFunction(entry.options.next)) return entry.options.next
+
   let next = entries.find(e => e.id === entry.options.next)
   if (!next) return null
 
@@ -63,6 +66,7 @@ function getNext(entry) {
 }
 
 function getPrev(entry) {
+  if (isFunction(entry.options.prev)) return entry.options.prev
   let prev = entries.find(e => e.options.next === entry.id)
   if (!prev) return null
 
@@ -84,9 +88,6 @@ function init(entry) {
   Promise.all(showPromise).then(() => {
     let prev = getPrev(entry)
     let next = getNext(entry)
-    if (prev) {
-      entry.options.prev = prev.id
-    }
 
     let hasTarget = entry.target ? true : false
     let target = entry.target ? resolveTarget(entry) : null
@@ -120,18 +121,23 @@ function init(entry) {
       destroy(entry)
       if ('close' in entry.events) entry.events['close'].forEach(f => f(entry.instance))
     })
-    if (entry.options.prev)
+
+    if (prev)
       entry.element.querySelector('.godfather-prev').addEventListener('click', function() {
         destroy(entry)
-        let prev = entries.find(e => e.id === entry.options.prev)
-        init(prev)
         if ('prev' in entry.events) entry.events['prev'].forEach(f => f(entry.instance))
+
+        if (isFunction(prev)) prev()
+        else init(prev)
       })
+
     if (next)
       entry.element.querySelector('.godfather-next').addEventListener('click', function() {
         destroy(entry)
-        init(next)
         if ('next' in entry.events) entry.events['next'].forEach(f => f(entry.instance))
+
+        if (isFunction(next)) next()
+        else init(next)
       })
 
     document.body.appendChild(entry.element)
@@ -220,8 +226,8 @@ function template(entry) {
 }
 
 function register(id, target, options) {
-  if (!id) throw new Error('id is required')
-  if (entries.find(e => e.id === id)) throw new Error('Duplicate id')
+  if (!id) return new Error('ID is required')
+  if (entries.find(e => e.id === id)) return new Error('Skipping registration: Duplicate ID')
 
   let newEntry = {
     id,
@@ -273,6 +279,10 @@ function show(id) {
 function hide(id) {
   let entry = entries.find(e => e.id === id)
   if (entry) destroy(entry)
+}
+
+function isFunction(value) {
+  return typeof value === 'function'
 }
 
 function setDefault(options) {

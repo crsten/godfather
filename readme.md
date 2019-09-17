@@ -51,22 +51,23 @@ Guides can be attached to DOM elements
 
 This plugin can be customized, the following options are enabled:
 
-| Key            | Type    | Description                                               | Default |
-| -------------- | ------- | --------------------------------------------------------- | ------- |
-| title          | String  | The displayed title                                       | null    |
-| content        | String  | The displayed content                                     | null    |
-| image          | String  | The displayed image                                       | null    |
-| hint           | Boolean | Adds a small hint to the target                           | false   |
-| scrollIntoView | Boolean | Scrolls the guide into view                               | true    |
-| next           | String  | id of the next guide to show                              | null    |
-| overlay        | Boolean | add an overlay on the background and highlight the target | false   |
-| theme          | Object  | ...                                                       | ...     |
-| └-- background | String  | Hex or rgb background                                     | "#222"  |
-| └-- color      | String  | Hex or rgb text color                                     | "white" |
-| labels         | Object  | ...                                                       | ...     |
-| └-- prev       | String  | label for prev button                                     | "<"     |
-| └-- next       | String  | label for next button                                     | ">"     |
-| └-- close      | String  | label for close button                                    | "✕"     |
+| Key            | Type             | Description                                               | Default |
+| -------------- | ---------------- | --------------------------------------------------------- | ------- |
+| title          | String           | The displayed title                                       | null    |
+| content        | String           | The displayed content                                     | null    |
+| image          | String           | The displayed image                                       | null    |
+| hint           | Boolean          | Adds a small hint to the target                           | false   |
+| scrollIntoView | Boolean          | Scrolls the guide into view                               | true    |
+| prev           | Function         | Function to be executet on prev                           | null    |
+| next           | String, Function | id of the next guide to show or function to be executet   | null    |
+| overlay        | Boolean          | add an overlay on the background and highlight the target | false   |
+| theme          | Object           | ...                                                       | ...     |
+| └-- background | String           | Hex or rgb background                                     | "#222"  |
+| └-- color      | String           | Hex or rgb text color                                     | "white" |
+| labels         | Object           | ...                                                       | ...     |
+| └-- prev       | String           | label for prev button                                     | "<"     |
+| └-- next       | String           | label for next button                                     | ">"     |
+| └-- close      | String           | label for close button                                    | "✕"     |
 
 ## Instance object
 
