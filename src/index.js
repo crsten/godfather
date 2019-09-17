@@ -121,7 +121,6 @@ function init(entry) {
 
     entry.element.querySelector('.godfather-close').addEventListener('click', function() {
       destroy(entry)
-      if ('close' in entry.events) entry.events['close'].forEach(f => f(entry.instance))
     })
 
     if (prev)
@@ -156,7 +155,8 @@ function init(entry) {
         },
       })
 
-    if (entry.options.scrollIntoView) setTimeout(() => entry.element.scrollIntoView({ behavior: 'smooth' }), 0)
+    if (entry.options.scrollIntoView)
+      setTimeout(() => (target || entry.element).scrollIntoView({ behavior: 'smooth' }), 0)
   })
 }
 
