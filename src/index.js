@@ -80,7 +80,9 @@ function getPrev(entry) {
 }
 
 function init(entry) {
-  if (document.body.contains(entry.element)) return console.log('Target already visible')
+  if (entry.initialized) return console.log('Target already initialized')
+  entry.initialized = true
+
   let showPromise = []
   if ('show' in entry.events)
     showPromise = entry.events['show'].map(f => f(entry.instance)).filter(p => p instanceof Promise)
@@ -170,6 +172,8 @@ function destroy(entry) {
     document.body.removeChild(entry.element)
     if ('hide' in entry.events) entry.events['hide'].forEach(f => f(entry.instance))
   }
+
+  entry.initialized = false
 }
 
 function renderHint(entry) {
@@ -232,6 +236,7 @@ function register(id, target, options) {
   let newEntry = {
     id,
     target,
+    initialized: false,
     events: {},
     instance: {
       show() {
