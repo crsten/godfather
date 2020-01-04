@@ -58,6 +58,7 @@ This plugin can be customized, the following options are enabled:
 | image          | String           | The displayed image                                       | null    |
 | hint           | Boolean          | Adds a small hint to the target                           | false   |
 | scrollIntoView | Boolean          | Scrolls the guide into view                               | true    |
+| clickAway      | Boolean          | Cancel guiding if user clicks outside guide element       | true    |
 | prev           | Function         | Function to be executet on prev                           | null    |
 | next           | String, Function | id of the next guide to show or function to be executet   | null    |
 | overlay        | Boolean          | add an overlay on the background and highlight the target | false   |
@@ -83,19 +84,19 @@ The register method return an instance of the Godfather entry with the following
 ## Example
 
 ```js
-let entry = Godfather.register('don', '.sample-selector', {
-  title: 'Don Vito Corleone',
+let entry = Godfather.register("don", ".sample-selector", {
+  title: "Don Vito Corleone",
   content: "I'm gonna make him an offer he can't refuse",
-  image: 'don-vito-corleone.png',
+  image: "don-vito-corleone.png",
   hint: true,
-  next: 'michael',
-})
+  next: "michael"
+});
 
-Godfather.show('don')
+Godfather.show("don");
 
-entry.unregister()
-entry.addEventListener('close', e => e.unregister())
-entry.removeEventListener('close', e => e.unregister())
+entry.unregister();
+entry.addEventListener("close", e => e.unregister());
+entry.removeEventListener("close", e => e.unregister());
 ```
 
 ## Development & Testing
