@@ -1,8 +1,5 @@
 .godfather-entry {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: absolute;
   z-index: 10;
 
   $tooltip-size: 6px;
@@ -88,73 +85,17 @@
     margin: 0.5em 0;
   }
 
-  .tooltip-arrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
+  .godfather-arrow {
     position: absolute;
-    margin: $tooltip-size;
-    border-color: currentColor;
-  }
+    $size: 10px;
 
-  &[x-placement^='top'] {
-    margin-bottom: $tooltip-size;
+    border-radius: 2px;
 
-    .tooltip-arrow {
-      border-width: $tooltip-size $tooltip-size 0 $tooltip-size;
-      border-left-color: transparent !important;
-      border-right-color: transparent !important;
-      border-bottom-color: transparent !important;
-      bottom: -$tooltip-size;
-      left: calc(50% - #{$tooltip-size});
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-  }
+    width: $size;
+    height: $size;
 
-  &[x-placement^='bottom'] {
-    margin-top: $tooltip-size;
-
-    .tooltip-arrow {
-      border-width: 0 $tooltip-size $tooltip-size $tooltip-size;
-      border-left-color: transparent !important;
-      border-right-color: transparent !important;
-      border-top-color: transparent !important;
-      top: -$tooltip-size;
-      left: calc(50% - #{$tooltip-size});
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-  }
-
-  &[x-placement^='right'] {
-    margin-left: $tooltip-size;
-
-    .tooltip-arrow {
-      border-width: $tooltip-size $tooltip-size $tooltip-size 0;
-      border-left-color: transparent !important;
-      border-top-color: transparent !important;
-      border-bottom-color: transparent !important;
-      left: -$tooltip-size;
-      top: calc(50% - #{$tooltip-size});
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
-  &[x-placement^='left'] {
-    margin-right: $tooltip-size;
-
-    .tooltip-arrow {
-      border-width: $tooltip-size 0 $tooltip-size $tooltip-size;
-      border-top-color: transparent !important;
-      border-right-color: transparent !important;
-      border-bottom-color: transparent !important;
-      right: -$tooltip-size;
-      top: calc(50% - #{$tooltip-size});
-      margin-left: 0;
-      margin-right: 0;
-    }
+    z-index: -1;
+    pointer-events: none;
   }
 }
 

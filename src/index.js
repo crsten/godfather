@@ -1,6 +1,10 @@
-import Popper from "popper.js";
-import "./polyfills/find.js";
-import "./polyfills/assign.js";
+import {
+  computePosition,
+  arrow,
+  offset,
+  autoPlacement,
+  autoUpdate,
+} from "@floating-ui/dom";
 import "./styles/main.scss";
 
 let overlay = document.createElement("div");
@@ -19,13 +23,13 @@ let defaultOptions = {
   scrollIntoView: true,
   theme: {
     background: "#222",
-    color: "white"
+    color: "white",
   },
   labels: {
     prev: "<",
     next: ">",
-    close: "✕"
-  }
+    close: "✕",
+  },
 };
 
 function resolveTarget(entry) {
@@ -56,7 +60,7 @@ function getNext(entry) {
   if (!entry.options.next) return null;
   if (isFunction(entry.options.next)) return entry.options.next;
 
-  let next = entries.find(e => e.id === entry.options.next);
+  let next = entries.find((e) => e.id === entry.options.next);
   if (!next) return null;
 
   let hasTarget = next.target ? true : false;
@@ -70,7 +74,7 @@ function getNext(entry) {
 
 function getPrev(entry) {
   if (isFunction(entry.options.prev)) return entry.options.prev;
-  let prev = entries.find(e => e.options.next === entry.id);
+  let prev = entries.find((e) => e.options.next === entry.id);
   if (!prev) return null;
 
   let hasTarget = prev.target ? true : false;
@@ -89,8 +93,8 @@ function init(entry) {
   let showPromise = [];
   if ("show" in entry.events)
     showPromise = entry.events["show"]
-      .map(f => f(entry.instance))
-      .filter(p => p instanceof Promise);
+      .map((f) => f(entry.instance))
+      .filter((p) => p instanceof Promise);
 
   Promise.all(showPromise).then(() => {
     let prev = getPrev(entry);
@@ -118,7 +122,7 @@ function init(entry) {
       });
     }
 
-    Object.keys(entry.options.theme).forEach(key => {
+    Object.keys(entry.options.theme).forEach((key) => {
       entry.element.firstElementChild.style[key] = entry.options.theme[key];
     });
 
@@ -126,17 +130,17 @@ function init(entry) {
 
     entry.element
       .querySelector(".godfather-close")
-      .addEventListener("click", function() {
+      .addEventListener("click", function () {
         destroy(entry);
       });
 
     if (prev)
       entry.element
         .querySelector(".godfather-prev")
-        .addEventListener("click", function() {
+        .addEventListener("click", function () {
           destroy(entry);
           if ("prev" in entry.events)
-            entry.events["prev"].forEach(f => f(entry.instance));
+            entry.events["prev"].forEach((f) => f(entry.instance));
 
           if (isFunction(prev)) prev();
           else init(prev);
@@ -145,10 +149,10 @@ function init(entry) {
     if (next)
       entry.element
         .querySelector(".godfather-next")
-        .addEventListener("click", function() {
+        .addEventListener("click", function () {
           destroy(entry);
           if ("next" in entry.events)
-            entry.events["next"].forEach(f => f(entry.instance));
+            entry.events["next"].forEach((f) => f(entry.instance));
 
           if (isFunction(next)) next();
           else init(next);
@@ -159,15 +163,54 @@ function init(entry) {
     if (entry.options.clickAway)
       entry.clickAway = clickAway(entry.element, hide.bind(null, entry.id));
 
-    if (target)
-      entry.popper = new Popper(target, entry.element, {
-        placement: entry.options.placement || "bottom",
-        modifiers: {
-          offset: {
-            offset: "0,10"
-          }
+    if (target) {
+      const arrowEl = entry.element.querySelector(".godfather-arrow");
+
+      const getAttachTo = () => {
+        switch (entry.options.attachTo) {
+          case "hint":
+            return entry.hint;
+          case "element":
+            return target;
+          default:
+            return entry.options.attachTo || target;
         }
+      };
+      const attachTo = getAttachTo();
+
+      entry.floatingui = autoUpdate(attachTo, entry.element, () => {
+        computePosition(attachTo, entry.element, {
+          placement: entry.options.placement,
+          middleware: [
+            offset(arrowEl.offsetWidth + 5),
+            entry.options.placement ? null : autoPlacement(),
+            arrow({ element: arrowEl }),
+          ].filter(Boolean),
+        }).then(({ x, y, placement, middlewareData: { arrow } }) => {
+          const { x: arrowX, y: arrowY } = arrow;
+
+          const side = placement.split("-")[0];
+
+          const staticSide = {
+            top: "bottom",
+            right: "left",
+            bottom: "top",
+            left: "right",
+          }[side];
+
+          Object.assign(entry.element.style, {
+            left: `${x}px`,
+            top: `${y}px`,
+          });
+          Object.assign(arrowEl.style, {
+            left: arrowX != null ? `${arrowX}px` : "",
+            top: arrowY != null ? `${arrowY}px` : "",
+            [staticSide]: `${-arrowEl.offsetWidth / 2}px`,
+            rotate: "45deg",
+          });
+        });
       });
+    }
 
     if (entry.options.scrollIntoView)
       setTimeout(
@@ -182,13 +225,13 @@ function destroy(entry) {
     let target = resolveTarget(entry);
     if (target) target.classList.remove("godfather--active");
   }
-  if (entry.popper) entry.popper.destroy();
+  if (entry.floatingui) entry.floatingui();
   if (entry.options.overlay) removeOverlay(entry);
   if (entry.clickAway) window.removeEventListener("click", entry.clickAway);
   if (document.body.contains(entry.element)) {
     document.body.removeChild(entry.element);
     if ("hide" in entry.events)
-      entry.events["hide"].forEach(f => f(entry.instance));
+      entry.events["hide"].forEach((f) => f(entry.instance));
   }
 
   entry.initialized = false;
@@ -205,7 +248,7 @@ function renderHint(entry) {
   hint.classList.add("godfather-hint");
   hint.style.color = entry.options.theme.background;
 
-  hint.addEventListener("click", function(event) {
+  hint.addEventListener("click", function (event) {
     if (document.body.contains(entry.element)) hide(entry.id);
     else show(entry.id);
   });
@@ -226,7 +269,7 @@ function template(entry) {
 
   return `
     <div class="godfather-animation">
-      <div class="popper__arrow tooltip-arrow" x-arrow style="color: ${
+      <div class="godfather-arrow" style="background-color: ${
         entry.options.theme.background
       }"></div>
       <div class="godfather-container">
@@ -269,7 +312,7 @@ function template(entry) {
 
 function register(id, target, options) {
   if (!id) return new Error("ID is required");
-  if (entries.find(e => e.id === id))
+  if (entries.find((e) => e.id === id))
     return new Error("Skipping registration: Duplicate ID");
 
   let newEntry = {
@@ -293,10 +336,10 @@ function register(id, target, options) {
       },
       removeEventListener(ev, func) {
         if (!newEntry.events[ev]) return;
-        newEntry.events[ev] = newEntry.events[ev].filter(f => f !== func);
-      }
+        newEntry.events[ev] = newEntry.events[ev].filter((f) => f !== func);
+      },
     },
-    options: Object.assign({}, defaultOptions, options)
+    options: Object.assign({}, defaultOptions, options),
   };
 
   entries.push(newEntry);
@@ -307,21 +350,21 @@ function register(id, target, options) {
 }
 
 function unregister(id) {
-  let entry = entries.find(e => e.id === id);
+  let entry = entries.find((e) => e.id === id);
   if (!entry) return;
 
   destroy(entry);
   if (entry.hint) destroyHint(entry);
-  entries = entries.filter(e => e.id !== id);
+  entries = entries.filter((e) => e.id !== id);
 }
 
 function show(id) {
-  let entry = entries.find(e => e.id === id);
+  let entry = entries.find((e) => e.id === id);
   if (entry) init(entry);
 }
 
 function hide(id) {
-  let entry = entries.find(e => e.id === id);
+  let entry = entries.find((e) => e.id === id);
   if (entry) destroy(entry);
 }
 
@@ -334,7 +377,7 @@ function setDefault(options) {
 }
 
 function merge(a, b) {
-  Object.keys(b).forEach(key => {
+  Object.keys(b).forEach((key) => {
     if (b[key] !== null && typeof b[key] === "object")
       b[key] = merge(a[key], b[key]);
   });
@@ -343,7 +386,7 @@ function merge(a, b) {
 }
 
 function clickAway(target, cb) {
-  let func = function(event) {
+  let func = function (event) {
     if (target.contains(event.target) || target === event.target) return;
     cb();
   };
@@ -358,7 +401,7 @@ let Godfather = {
   unregister,
   show,
   hide,
-  setDefault
+  setDefault,
 };
 
 export default Godfather;
